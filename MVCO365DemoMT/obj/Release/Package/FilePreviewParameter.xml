@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="chaksmtdemo" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Auth\\MVCO365DemoMT\\MVCO365DemoMT\\obj\\Release\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^C:\\Auth\\MVCO365DemoMT\\MVCO365DemoMT\\obj\\Release\\Package\\PackageTmp$" />
+  </parameter>
+</parameters>
