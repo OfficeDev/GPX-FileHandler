@@ -6,10 +6,10 @@
 	{
 		'type': 'FileHandler',
 		'properties': {
-			'extension': 'gpx',
-			'fileIcon': 'https://gpxforoffice365.azurewebsites.net/content/pinpoint-16x16.png', 
-			'previewUrl': 'https://gpxforoffice365.azurewebsites.net/filehandler/preview', 
-			'openUrl': 'https://gpxforoffice365.azurewebsites.net/filehandler/open'
+			'extension': '[extension]',
+			'fileIcon': '[https link to icon resource]', 
+			'previewUrl': '[https link to preview endpoint]', 
+			'openUrl': '[https link to open endpoint]'
 		}
 	},
 	
