@@ -1,0 +1,17 @@
+﻿{
+"Id": "[REPLACE CLIENT ID HERE]",
+"Manifest": "
+{
+	'extensionPoints': [
+	{
+		'type': 'FileHandler',
+		'properties': {
+			'extension': 'gpx',
+			'fileIcon': 'https://gpxforoffice365.azurewebsites.net/content/pinpoint-16x16.png', 
+			'previewUrl': 'https://gpxforoffice365.azurewebsites.net/filehandler/preview', 
+			'openUrl': 'https://gpxforoffice365.azurewebsites.net/filehandler/open'
+		}
+	},
+	
+]}"
+}
