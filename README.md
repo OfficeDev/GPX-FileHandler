@@ -12,5 +12,5 @@ To run this on your machine after cloning:
 ```
 Add-Type -Path "C:\Program Files\Common Files\microsoft shared\Web Server Extensions\15\ISAPI\Microsoft.SharePoint.Client.dll" 
 Add-Type -Path "C:\Program Files\Common Files\microsoft shared\Web Server Extensions\15\ISAPI\Microsoft.SharePoint.Client.Runtime.dll"
-./CallO365SharePointRest.ps1 -API "https://[tenant].sharepoint.com/_app/apps/" -Username [admin email] -HTTPVerb POST -BodyFile ".\MVCO365DemoMT\install_manifest.json" 
+./CallO365SharePointRest.ps1 -API "https://[tenant].sharepoint.com/_api/apps/" -Username [admin email] -HTTPVerb POST -BodyFile ".\MVCO365DemoMT\install_manifest.json" 
 ```
