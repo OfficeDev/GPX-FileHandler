@@ -1,6 +1,7 @@
 GPX-FileHandler
 ===============
 This is a version of [a O365 multi-tenant webapp](https://github.com/OfficeDev/O365-WebApp-MultiTenant) modified to work as a File Handler extension for GPX files.
+
 *Note*: This application requires SharePoint Online's "Read users' files" and "Edit or delete users' files" permissions to operate properly.
 
 To run this on your machine after cloning:
