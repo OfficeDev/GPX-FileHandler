@@ -7,15 +7,15 @@ namespace MVCO365Demo.Utils
 {
     public class AADAppSettings
     {
-        
+
         private static string _clientId = ConfigurationManager.AppSettings["ida:ClientId"] ?? ConfigurationManager.AppSettings["ida:ClientID"];
         private static string _appKey = ConfigurationManager.AppSettings["ida:AppKey"] ?? ConfigurationManager.AppSettings["ida:Password"];
         private static string _authorizationUri = ConfigurationManager.AppSettings["ida:AuthorizationUri"];
         private static string _graphResourceId = ConfigurationManager.AppSettings["ida:GraphResourceId"];
 
-        private static string _authority="https://login.windows.net/common/";
-        private static string _discoverySvcResourceId = "https://api.officeppe.com/discovery/";
-        private static string _discoverySvcEndpointUri = "https://api.officeppe.com/discovery/me/";
+        private static string _authority = _authorizationUri + "/common/";
+        private static string _discoverySvcResourceId = ConfigurationManager.AppSettings["ida:DiscoverySvcResourceId"];
+        private static string _discoverySvcEndpointUri = ConfigurationManager.AppSettings["ida:DiscoverySvcEndpointUri"];
 
         public static string ClientId
         {
