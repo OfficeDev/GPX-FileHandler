@@ -32,7 +32,7 @@ namespace MVCO365Demo.Models
         }
 
         
-        public String ToString()
+        public override String ToString()
         {
             String str = "";
             str += "Client: " + this.Client + "<br/>";

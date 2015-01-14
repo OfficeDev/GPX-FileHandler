@@ -20,14 +20,15 @@ namespace MVCO365Demo.Controllers
     public class FileHandlerController : Controller
     {
         private GPXHelper gpxUtils = new GPXHelper();
-        public static readonly string SavedFormDataKey = "FILEHANDLER_FORMDATA";
+        public const string SavedFormDataPrefix = "FILEHANDLER_FORMDATA"; 
+        public static string SavedFormDataKey = "FILEHANDLER_FORMDATA"; // Append userObjectId
         public static readonly string DocumentKey = "XML_DOCUMENT_KEY";
 
         public async Task<ActionResult> Preview()
         {
-            ActivationParameters parameters = this.LoadActivationParameters();
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
+            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
@@ -35,6 +36,7 @@ namespace MVCO365Demo.Controllers
 
             try
             {
+                ActivationParameters parameters = this.LoadActivationParameters();
                 authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(parameters.FileGet);
@@ -65,14 +67,15 @@ namespace MVCO365Demo.Controllers
         public async Task<ActionResult> Open()
         {
             //load activation parameters and all the stuff you need to get a token
-            ActivationParameters parameters = this.LoadActivationParameters();
-            Session[FileHandlerController.SavedFormDataKey] = parameters;
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
+            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
             AuthenticationResult authResult = null;
+            ActivationParameters parameters = this.LoadActivationParameters();
+            Session[FileHandlerController.SavedFormDataKey] = parameters;
 
             try
             {
@@ -112,12 +115,10 @@ namespace MVCO365Demo.Controllers
 
         public async Task<ActionResult> Save(string newName)
         {
-            //grab activation parameters (this was set in Open controller)
-            ActivationParameters parameters = Session[FileHandlerController.SavedFormDataKey] as ActivationParameters;
-
             //grab all the stuff you need to get a token
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
+            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
@@ -130,6 +131,8 @@ namespace MVCO365Demo.Controllers
 
             try
             {
+                //grab activation parameters (this was set in Open controller)
+                ActivationParameters parameters = Session[FileHandlerController.SavedFormDataKey] as ActivationParameters;
                 //grab token
                 authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
@@ -176,17 +179,17 @@ namespace MVCO365Demo.Controllers
         private ActivationParameters LoadActivationParameters()
         {
             ActivationParameters parameters;
-            FormDataCookie cookie = new FormDataCookie(FileHandlerController.SavedFormDataKey);
 
-            if (cookie.IsLoaded && cookie.FormData!=null && cookie.FormData.AllKeys.Length !=0)
+            FormDataCookie cookie = new FormDataCookie(FileHandlerController.SavedFormDataKey);
+            if (cookie.FormData != null && cookie.FormData.AllKeys != null && cookie.FormData.AllKeys.Length > 0)
             {
                 parameters = new ActivationParameters(cookie.FormData);
-                cookie.Clear();
             }
             else
             {
                 parameters = new ActivationParameters(Request.Form);
             }
+
             return parameters;
         }
     }
