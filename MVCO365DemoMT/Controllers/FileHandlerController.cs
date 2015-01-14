@@ -178,7 +178,7 @@ namespace MVCO365Demo.Controllers
             ActivationParameters parameters;
             FormDataCookie cookie = new FormDataCookie(FileHandlerController.SavedFormDataKey);
 
-            if (cookie.IsLoaded)
+            if (cookie.IsLoaded && cookie.FormData!=null && cookie.FormData.AllKeys.Length !=0)
             {
                 parameters = new ActivationParameters(cookie.FormData);
                 cookie.Clear();
