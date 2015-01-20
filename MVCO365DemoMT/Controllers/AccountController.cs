@@ -63,7 +63,7 @@ namespace MVCO365Demo.Controllers
 
             string authorizationRequest = String.Format(
                 "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}",
-                    Uri.EscapeDataString(SettingsHelper.ClientId),
+                    Uri.EscapeDataString(AADAppSettings.ClientId),
                     Uri.EscapeDataString(strResource),
                     Uri.EscapeDataString(String.Format("{0}/{1}", this.Request.Url.GetLeftPart(UriPartial.Authority).ToString(), strRedirectController))
                     );
@@ -78,7 +78,7 @@ namespace MVCO365Demo.Controllers
 
             string authorizationRequest = String.Format(
                 "https://login.windows.net/common/oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}&prompt={3}",
-                    Uri.EscapeDataString(SettingsHelper.ClientId),
+                    Uri.EscapeDataString(AADAppSettings.ClientId),
                     Uri.EscapeDataString(strResource),
                     Uri.EscapeDataString(String.Format("{0}/{1}", this.Request.Url.GetLeftPart(UriPartial.Authority).ToString(), strRedirectController)),
                     Uri.EscapeDataString("admin_consent")

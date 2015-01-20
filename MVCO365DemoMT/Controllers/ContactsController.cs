@@ -38,14 +38,14 @@ namespace MVCO365Demo.Controllers
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
 
-            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", SettingsHelper.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
+            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
 
             try
             {
-                DiscoveryClient discClient = new DiscoveryClient(SettingsHelper.DiscoveryServiceEndpointUri,
+                DiscoveryClient discClient = new DiscoveryClient(AADAppSettings.DiscoveryServiceEndpointUri,
                     async () =>
                     {
-                        var authResult = await authContext.AcquireTokenSilentAsync(SettingsHelper.DiscoveryServiceResourceId, new ClientCredential(SettingsHelper.ClientId, SettingsHelper.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+                        var authResult = await authContext.AcquireTokenSilentAsync(AADAppSettings.DiscoveryServiceResourceId, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
 
                         return authResult.AccessToken;
                     });
@@ -57,7 +57,7 @@ namespace MVCO365Demo.Controllers
                 OutlookServicesClient exClient = new OutlookServicesClient(dcr.ServiceEndpointUri,
                     async () =>
                     {
-                        var authResult = await authContext.AcquireTokenSilentAsync(dcr.ServiceResourceId, new ClientCredential(SettingsHelper.ClientId, SettingsHelper.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+                        var authResult = await authContext.AcquireTokenSilentAsync(dcr.ServiceResourceId, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
 
                         return authResult.AccessToken;
                     });
