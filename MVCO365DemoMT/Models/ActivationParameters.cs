@@ -44,7 +44,5 @@ namespace MVCO365Demo.Models
             str += "ViewPort Width: " + this.ViewportWidth + "<br/>";
             return str;
         }
-
-
     }
 }

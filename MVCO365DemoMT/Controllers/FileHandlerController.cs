@@ -20,7 +20,7 @@ namespace MVCO365Demo.Controllers
     public class FileHandlerController : Controller
     {
         private GPXHelper gpxUtils = new GPXHelper();
-        public const string SavedFormDataPrefix = "FILEHANDLER_FORMDATA"; 
+        public const string SavedFormDataPrefix = "FILEHANDLER_FORMDATA";
         public static string SavedFormDataKey = "FILEHANDLER_FORMDATA"; // Append userObjectId
         public static readonly string DocumentKey = "XML_DOCUMENT_KEY";
 
@@ -31,7 +31,7 @@ namespace MVCO365Demo.Controllers
             SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
-            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
+            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
             AuthenticationResult authResult = null;
 
             try
@@ -72,7 +72,7 @@ namespace MVCO365Demo.Controllers
             SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
-            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
+            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
             AuthenticationResult authResult = null;
             ActivationParameters parameters = this.LoadActivationParameters();
             Session[FileHandlerController.SavedFormDataKey] = parameters;
@@ -121,7 +121,7 @@ namespace MVCO365Demo.Controllers
             SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
-            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new NaiveSessionCache(signInUserId));
+            AuthenticationContext authContext = new AuthenticationContext(string.Format("{0}/{1}", AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
             AuthenticationResult authResult = null;
             Stream fileStream = null;
 
