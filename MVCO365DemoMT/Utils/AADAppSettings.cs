@@ -13,7 +13,7 @@ namespace MVCO365Demo.Utils
         private static string _authorizationUri = ConfigurationManager.AppSettings["ida:AuthorizationUri"];
         private static string _graphResourceId = ConfigurationManager.AppSettings["ida:GraphResourceId"];
 
-        private static string _authority = _authorizationUri + "/common/";
+        private static string _authority = ConfigurationManager.AppSettings ["ida:authority"];
         private static string _discoverySvcResourceId = ConfigurationManager.AppSettings["ida:DiscoverySvcResourceId"];
         private static string _discoverySvcEndpointUri = ConfigurationManager.AppSettings["ida:DiscoverySvcEndpointUri"];
 
