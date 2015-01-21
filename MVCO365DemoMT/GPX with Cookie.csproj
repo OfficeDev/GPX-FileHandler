@@ -219,6 +219,7 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.css.map" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <None Include="Properties\PublishProfiles\gpxfileApp-int.pubxml" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -258,6 +259,7 @@
     <Content Include="Views\Contacts\Index.cshtml" />
     <Content Include="Views\FileHandler\Preview.cshtml" />
     <Content Include="Views\FileHandler\Open.cshtml" />
+    <Content Include="web-ppe.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
