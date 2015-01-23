@@ -80,6 +80,9 @@ namespace MVCO365Demo
 
                         RedirectToIdentityProvider = (context) =>
                         {
+                            // Save the form in the cookie to prevent it get lost in the login redirect
+                            FormDataCookie cookie = new FormDataCookie(AADAppSettings.SavedFormDataName);
+                            cookie.SaveRequestFormToCookie();
                             // This ensures that the address used for sign in and sign out is picked up dynamically from the request
                             // this allows you to deploy your app (to Azure Web Sites, for example)without having to change settings
                             // Remember that the base URL of the address used here must be provisioned in Azure AD beforehand.

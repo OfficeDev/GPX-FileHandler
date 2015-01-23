@@ -1,9 +1,4 @@
-﻿using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using MVCO365Demo.Models;
-using MVCO365Demo.Utils;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -12,7 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Xml;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Owin.Security.OpenIdConnect;
+using MVCO365Demo.Models;
+using MVCO365Demo.Utils;
 
 namespace MVCO365Demo.Controllers
 {
@@ -20,15 +18,12 @@ namespace MVCO365Demo.Controllers
     public class FileHandlerController : Controller
     {
         private GPXHelper gpxUtils = new GPXHelper();
-        public const string SavedFormDataPrefix = "FILEHANDLER_FORMDATA";
-        public static string SavedFormDataKey = "FILEHANDLER_FORMDATA"; // Append userObjectId
         public static readonly string DocumentKey = "XML_DOCUMENT_KEY";
 
         public async Task<ActionResult> Preview()
         {
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
-            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format(AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
@@ -66,16 +61,22 @@ namespace MVCO365Demo.Controllers
 
         public async Task<ActionResult> Open()
         {
+            ActivationParameters parameters = this.LoadActivationParameters();
+
+            string test = HttpContext.User.Identity.Name;
+            await HttpContext.GetOwinContext().Authentication.AuthenticateAsync(OpenIdConnectAuthenticationDefaults.AuthenticationType);
+
+            // Sign in to the app
+            // HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = "/FileHandler/Open"}, OpenIdConnectAuthenticationDefaults.AuthenticationType);
+
             //load activation parameters and all the stuff you need to get a token
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
-            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format(AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
             AuthenticationResult authResult = null;
-            ActivationParameters parameters = this.LoadActivationParameters();
-            Session[FileHandlerController.SavedFormDataKey] = parameters;
+            Session[AADAppSettings.SavedFormDataName] = parameters;
 
             try
             {
@@ -123,7 +124,6 @@ namespace MVCO365Demo.Controllers
             //grab all the stuff you need to get a token
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
-            SavedFormDataKey = SavedFormDataPrefix + userObjectId;
             var tenantId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value;
             String token = null;
             AuthenticationContext authContext = new AuthenticationContext(string.Format(AADAppSettings.AuthorizationUri, tenantId), new ADALTokenCache(signInUserId));
@@ -137,7 +137,7 @@ namespace MVCO365Demo.Controllers
             try
             {
                 //grab activation parameters (this was set in Open controller)
-                ActivationParameters parameters = Session[FileHandlerController.SavedFormDataKey] as ActivationParameters;
+                ActivationParameters parameters = Session[AADAppSettings.SavedFormDataName] as ActivationParameters;
                 //grab token
                 authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
@@ -185,16 +185,23 @@ namespace MVCO365Demo.Controllers
         {
             ActivationParameters parameters;
 
-            FormDataCookie cookie = new FormDataCookie(FileHandlerController.SavedFormDataKey);
-            if (cookie.FormData != null && cookie.FormData.AllKeys != null && cookie.FormData.AllKeys.Length > 0)
+            FormDataCookie cookie = new FormDataCookie(AADAppSettings.SavedFormDataName);
+            if (Request.Form != null && Request.Form.AllKeys.Count<string>() != 0)
             {
+                // get from current request's form data
+                parameters = new ActivationParameters(Request.Form);
+            }
+            else if (cookie.Load() && cookie.IsLoaded && cookie.FormData.AllKeys.Count<string>() > 0)
+            {
+                // if form data does not exist, it must be because of the sign in redirection, at the time form data is saved in the cookie 
                 parameters = new ActivationParameters(cookie.FormData);
+                // clear the cookie after using it
+                cookie.Clear();
             }
             else
             {
-                parameters = new ActivationParameters(Request.Form);
+                parameters = (ActivationParameters)Session[AADAppSettings.SavedFormDataName];
             }
-
             return parameters;
         }
     }

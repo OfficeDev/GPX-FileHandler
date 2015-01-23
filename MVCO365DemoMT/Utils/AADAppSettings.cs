@@ -2,10 +2,9 @@
 using System.Configuration;
 using System.Security.Claims;
 
-
 namespace MVCO365Demo.Utils
 {
-    public class AADAppSettings
+    public static class AADAppSettings
     {
 
         private static string _clientId = ConfigurationManager.AppSettings["ida:ClientId"] ?? ConfigurationManager.AppSettings["ida:ClientID"];
@@ -19,6 +18,8 @@ namespace MVCO365Demo.Utils
 
         private static string _discoverySvcResourceId = ConfigurationManager.AppSettings["ida:DiscoverySvcResourceId"];
         private static string _discoverySvcEndpointUri = ConfigurationManager.AppSettings["ida:DiscoverySvcEndpointUri"];
+
+        public const string SavedFormDataName = "FILEHANDLER_FORMDATA";
 
         public static string ClientId
         {

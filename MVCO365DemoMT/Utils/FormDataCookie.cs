@@ -31,11 +31,6 @@ namespace MVCO365Demo.Utils
         {
             this.Name = name;
             this.FormData = null;
-
-            if (tryLoad)
-            {
-                this.Load();
-            }
         }
 
         public bool Load()
@@ -56,7 +51,7 @@ namespace MVCO365Demo.Utils
             }
         }
 
-        public bool Save()
+        public bool SaveRequestFormToCookie()
         {
             HttpCookie cookie = new HttpCookie(this.Name);
             JavaScriptSerializer serializer = new JavaScriptSerializer();
