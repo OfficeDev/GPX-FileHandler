@@ -15,6 +15,7 @@
 //----------------------------------------------------------------------------------------------
 
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
@@ -42,6 +43,11 @@ namespace MVCO365Demo
                     ClientId = AADAppSettings.ClientId,
                     Authority = AADAppSettings.Authority,
 
+                    // ProtocolValidator = new OpenIdConnectProtocolValidator()
+                    // {
+                    //    RequireNonce = false,
+                    // },
+
                     TokenValidationParameters = new System.IdentityModel.Tokens.TokenValidationParameters
                     {
                         // instead of using the default validation (validating against a single issuer value, as we do in line of business apps (single tenant apps)), 
@@ -60,7 +66,7 @@ namespace MVCO365Demo
 
                     Notifications = new OpenIdConnectAuthenticationNotifications()
                     {
-                        // If there is a code in the OpenID Connect response, redeem it for an access token and refresh token, and store those away. 
+                        //If there is a code in the OpenID Connect response, redeem it for an access token and refresh token, and store those away. 
                         AuthorizationCodeReceived = (context) =>
                         {
                             var code = context.Code;
@@ -80,25 +86,27 @@ namespace MVCO365Demo
 
                         RedirectToIdentityProvider = (context) =>
                         {
-                            // Save the form in the cookie to prevent it get lost in the login redirect
-                            FormDataCookie cookie = new FormDataCookie(AADAppSettings.SavedFormDataName);
-                            cookie.SaveRequestFormToCookie();
                             // This ensures that the address used for sign in and sign out is picked up dynamically from the request
                             // this allows you to deploy your app (to Azure Web Sites, for example)without having to change settings
                             // Remember that the base URL of the address used here must be provisioned in Azure AD beforehand.
                             string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
                             context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
                             context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
+                            // context.ProtocolMessage.ResponseType = OpenIdConnectResponseTypes.CodeIdToken;
 
-                            return Task.FromResult(0);
-                        },
+                            // Save the form in the cookie to prevent it from getting lost in the login redirect
+                            FormDataCookie cookie = new FormDataCookie(AADAppSettings.SavedFormDataName);
+                            cookie.SaveRequestFormToCookie();
 
-                        AuthenticationFailed = (context) =>
-                        {
-                            // Suppress the exception if you don't want to see the error
-                            context.HandleResponse();
                             return Task.FromResult(0);
                         }
+
+                        // AuthenticationFailed = (context) =>
+                        // {
+                        //    // Suppress the exception if you don't want to see the error
+                        //   // context.HandleResponse();
+                        //    return Task.FromResult(0);
+                        // }
                     }
 
                 });
