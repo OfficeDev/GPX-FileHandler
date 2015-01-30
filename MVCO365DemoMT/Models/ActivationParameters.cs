@@ -20,6 +20,7 @@ namespace MVCO365Demo.Models
             this.Client = activationParameters["client"];
             this.CultureName = activationParameters["cultureName"];
             this.FileGet = activationParameters["fileGet"];
+            this.FileGet = this.FileGet.Replace("''", "'");
             this.FilePut = activationParameters["filePut"];
             this.Tenant = activationParameters["tenant"];
             this.ViewportHeight = activationParameters["viewportheight"];
@@ -31,8 +32,8 @@ namespace MVCO365Demo.Models
             }
         }
 
-        
-        public String ToString()
+
+        public override String ToString()
         {
             String str = "";
             str += "Client: " + this.Client + "<br/>";
@@ -44,7 +45,5 @@ namespace MVCO365Demo.Models
             str += "ViewPort Width: " + this.ViewportWidth + "<br/>";
             return str;
         }
-
-
     }
 }

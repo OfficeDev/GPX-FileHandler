@@ -41,9 +41,10 @@ namespace MVCO365Demo.Controllers
                 String responseString = reader.ReadToEnd();
                 this.doc.LoadXml(responseString);
             } 
-            catch(Exception e)
+            catch(Exception)
             {
                 this.doc = null;
+                throw;
             }
             finally
             {
