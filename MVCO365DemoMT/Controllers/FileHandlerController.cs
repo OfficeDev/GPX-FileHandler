@@ -32,7 +32,7 @@ namespace MVCO365Demo.Controllers
             try
             {
                 ActivationParameters parameters = this.LoadActivationParameters();
-                authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+                authResult = await authContext.AcquireTokenSilentAsync(parameters.ResourceId, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(parameters.FileGet);
                 request.Headers.Add("Authorization: bearer " + token);
@@ -81,7 +81,7 @@ namespace MVCO365Demo.Controllers
             try
             {
                 //grab the token
-                authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+                authResult = await authContext.AcquireTokenSilentAsync(parameters.ResourceId, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
 
                 //assemble request to get the file
@@ -139,7 +139,7 @@ namespace MVCO365Demo.Controllers
                 //grab activation parameters (this was set in Open controller)
                 ActivationParameters parameters = Session[AADAppSettings.SavedFormDataName] as ActivationParameters;
                 //grab token
-                authResult = await authContext.AcquireTokenSilentAsync(parameters.Tenant, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+                authResult = await authContext.AcquireTokenSilentAsync(parameters.ResourceId, new ClientCredential(AADAppSettings.ClientId, AADAppSettings.AppKey), new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
                 token = authResult.AccessToken;
 
                 //create request to write file back to server
