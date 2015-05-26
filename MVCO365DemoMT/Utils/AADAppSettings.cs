@@ -13,7 +13,7 @@ namespace MVCO365Demo.Utils
         private static string _graphResourceId = ConfigurationManager.AppSettings["ida:GraphResourceId"];
         private static string _authority = ConfigurationManager.AppSettings["ida:authority"];
 
-        private static string _consentUri = _authority +"oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}";
+        private static string _consentUri = _authority + "oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}";
         private static string _adminConsentUri = _authority +"oauth2/authorize?response_type=code&client_id={0}&resource={1}&redirect_uri={2}&prompt={3}";
 
         private static string _discoverySvcResourceId = ConfigurationManager.AppSettings["ida:DiscoverySvcResourceId"];

@@ -14,26 +14,40 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------------------------
 
+using System;
+using System.IdentityModel.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using Kentor.OwinCookieSaver;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Microsoft.IdentityModel.Protocols;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using MVCO365Demo.Models;
 using MVCO365Demo.Utils;
 using Owin;
-using System;
-using System.IdentityModel.Claims;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace MVCO365Demo
 {
     public partial class Startup
     {
+        class ConditionalMiddlewareInvoker : OwinMiddleware
+        {
+            public ConditionalMiddlewareInvoker(OwinMiddleware next)
+                : base(next) { }
+
+            public async override Task Invoke(IOwinContext context)
+            {
+                await (new KentorOwinCookieSaverMiddleware(Next)).Invoke(context);
+            }
+        }
+
         public void ConfigureAuth(IAppBuilder app)
         {
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
+
+            app.Use(typeof(ConditionalMiddlewareInvoker));
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions());
 
@@ -92,7 +106,6 @@ namespace MVCO365Demo
                             string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
                             context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
                             context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
-                            // context.ProtocolMessage.ResponseType = OpenIdConnectResponseTypes.CodeIdToken;
 
                             // Save the form in the cookie to prevent it from getting lost in the login redirect
                             FormDataCookie cookie = new FormDataCookie(AADAppSettings.SavedFormDataName);

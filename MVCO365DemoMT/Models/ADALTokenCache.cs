@@ -85,12 +85,13 @@ namespace MVCO365Demo.Models
             // if state changed
             if (this.HasStateChanged)
             {
-                Cache = new UserTokenCache
+                if (Cache == null)
                 {
-                    webUserUniqueId = User,
-                    cacheBits = this.Serialize(),
-                    LastWrite = DateTime.Now
-                };
+                    Cache = new UserTokenCache();
+                }
+                Cache.webUserUniqueId = User;
+                Cache.cacheBits = this.Serialize();
+                Cache.LastWrite = DateTime.Now;
                 //// update the DB and the lastwrite                
                 db.Entry(Cache).State = Cache.UserTokenCacheId == 0 ? EntityState.Added : EntityState.Modified;
                 db.SaveChanges();

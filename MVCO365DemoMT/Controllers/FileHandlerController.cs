@@ -66,9 +66,6 @@ namespace MVCO365Demo.Controllers
             string test = HttpContext.User.Identity.Name;
             await HttpContext.GetOwinContext().Authentication.AuthenticateAsync(OpenIdConnectAuthenticationDefaults.AuthenticationType);
 
-            // Sign in to the app
-            // HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = "/FileHandler/Open"}, OpenIdConnectAuthenticationDefaults.AuthenticationType);
-
             //load activation parameters and all the stuff you need to get a token
             var signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userObjectId = ClaimsPrincipal.Current.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value;
