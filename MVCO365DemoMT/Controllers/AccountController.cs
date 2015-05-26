@@ -14,16 +14,15 @@
 //    limitations under the License.
 //----------------------------------------------------------------------------------------------
 
+using System;
+using System.Security.Claims;
+using System.Web;
+using System.Web.Mvc;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using MVCO365Demo.Utils;
-using System;
-using System.Security.Claims;
-using System.Web;
-using System.Web.Mvc;
-
 
 namespace MVCO365Demo.Controllers
 {
@@ -71,10 +70,34 @@ namespace MVCO365Demo.Controllers
             return new RedirectResult(authorizationRequest);
         }
 
+        [Authorize]
         public ActionResult AdminConsentApp()
         {
+            // if login has expired, redirect so that user can login
+            if (ClaimsPrincipal.Current.FindFirst(ClaimTypes.NameIdentifier) == null)
+            {
+                RedirectToAction("Index");
+            }
+
             string strResource = Request.QueryString["resource"];
+            if (string.IsNullOrEmpty(strResource))
+            {
+                string signInUserId = ClaimsPrincipal.Current.FindFirst(ClaimTypes.Upn).Value;
+                strResource = signInUserId.Substring(signInUserId.IndexOf('@') + 1);
+                if (strResource.ToUpper() == "MICROSOFT.COM")
+                {
+                    if (AADAppSettings.Authority.Contains("-ppe"))
+                        strResource = "msft.spoppe.com";
+                    else
+                        strResource = "Microsoft.SharePoint.com";
+                }
+                strResource = "https://" + strResource;
+            }
             string strRedirectController = Request.QueryString["redirect"];
+            if (string.IsNullOrEmpty(strRedirectController))
+            {
+                strRedirectController = "Home/Index";
+            }
 
             string authorizationRequest = String.Format(
                 AADAppSettings.AdminConsentUri,
