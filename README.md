@@ -1,3 +1,17 @@
+---
+topic: sample
+products:
+- Office 365
+- SharePoint
+- OneDrive
+languages:
+- C#
+extensions:
+  contentType: samples
+  technologies:
+  - SharePoint Framework
+  createdDate: 10/27/2014 10:58:15 PM
+---
 GPX-FileHandler
 ===============
 This is a version of [a O365 multi-tenant webapp](https://github.com/OfficeDev/O365-WebApp-MultiTenant) modified to work as a File Handler extension for GPX files.
