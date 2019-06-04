@@ -1,19 +1,8 @@
----
-topic: sample
-products:
-- Office 365
-- SharePoint
-- OneDrive
-languages:
-- C#
-extensions:
-  contentType: samples
-  technologies:
-  - SharePoint Framework
-  createdDate: 10/27/2014 10:58:15 PM
----
-GPX-FileHandler
+[ARCHIVED] GPX-FileHandler
 ===============
+
+**Note:** This repo is archived and no longer actively maintained. Security vulnerabilities may exist in the project, or its dependencies. If you plan to reuse or run any code from this repo, be sure to perform appropriate security checks on the code or dependencies first. Do not use this project as the starting point of a production Office Add-in. Always start your production code by using the Office/SharePoint development workload in Visual Studio, or the [Yeoman generator for Office Add-ins](https://github.com/OfficeDev/generator-office), and follow security best practices as you develop the add-in.
+
 This is a version of [a O365 multi-tenant webapp](https://github.com/OfficeDev/O365-WebApp-MultiTenant) modified to work as a File Handler extension for GPX files.
 
 This application requires SharePoint Online's "Read users' files" and "Edit or delete users' files" permissions to operate properly.
